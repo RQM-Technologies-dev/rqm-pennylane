@@ -5,7 +5,7 @@ build-backend = "hatchling.build"
 [project]
 name = "rqm-pennylane"
 version = "0.1.0"
-description = "PennyLane integration layer for the RQM Quantum Computing ecosystem — differentiable gates, variational helpers, and hybrid quantum-classical workflows."
+description = "Differentiable and hybrid quantum workflows for the RQM ecosystem, built on PennyLane and rqm-core."
 readme = "README.md"
 license = { file = "LICENSE" }
 authors = [{ name = "RQM Technologies", email = "dev@rqm-technologies.io" }]
@@ -28,6 +28,17 @@ classifiers = [
     "Topic :: Scientific/Engineering :: Physics",
     "Topic :: Scientific/Engineering :: Mathematics",
     "Typing :: Typed",
+]
+keywords = [
+    "quantum-computing",
+    "pennylane",
+    "variational-quantum-circuits",
+    "quantum-machine-learning",
+    "quaternions",
+    "su2",
+    "qml",
+    "differentiable-programming",
+    "hybrid-quantum-classical",
 ]
 
 [project.optional-dependencies]

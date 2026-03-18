@@ -12,7 +12,7 @@ Supported gate names (case-insensitive):
   Two-qubit:    cnot, cz, swap
 
 Unsupported operations raise ``NotImplementedError`` with a clear message.
-The goal is to create the first bridge, not to translate every possible gate.
+Expanded gate coverage is available in later releases.
 """
 
 from __future__ import annotations
@@ -97,7 +97,7 @@ def compiled_operation_to_pennylane(
         raise NotImplementedError(
             f"Gate '{name}' is not supported by rqm-pennylane v0.1.0. "
             f"Supported gates: {supported}. "
-            "Full gate coverage is planned for a future release."
+            "Expanded gate coverage is available in later releases."
         )
 
     pl_op, has_params = _GATE_MAP[name_lower]

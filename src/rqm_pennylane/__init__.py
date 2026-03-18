@@ -2,20 +2,21 @@
 rqm_pennylane
 =============
 
-PennyLane integration layer for the RQM Quantum Computing ecosystem.
+Differentiable and hybrid quantum workflows for the RQM ecosystem, built on
+PennyLane and rqm-core.
 
 Provides:
 - Wrappers that convert RQM objects (quaternions, spinors, Bloch vectors)
-  into PennyLane-compatible representations.
+  into PennyLane-compatible representations, backed by rqm-core math.
 - Gradient-friendly parameterized gate helpers.
 - Reusable variational building-block templates.
 - Optimization step utilities.
 - Device convenience constructors.
-- A minimal bridge from rqm-compiler operations to PennyLane callables.
+- A minimal bridge from rqm-compiler circuit descriptors to PennyLane callables.
 
-Architectural rule: this package is an adapter layer. It imports canonical
-math from rqm-core and canonical circuit descriptors from rqm-compiler. It
-does not reimplement quaternion / spinor / SU(2) math or circuit optimization.
+Architectural rule: this package is a thin adapter layer. It imports canonical
+quaternion / spinor / SU(2) math from rqm-core and circuit descriptors from
+rqm-compiler. It does not reimplement that math or circuit optimization.
 """
 
 from rqm_pennylane.devices import default_qubit_device, lightning_device

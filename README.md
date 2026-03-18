@@ -25,7 +25,6 @@ It consumes canonical math from `rqm-core` and circuit descriptors from
 └────────────────┘ └────────────────┘ └─────────────────┘
 ```
 
-PennyLane is the differentiable / variational entrypoint in the RQM stack.
 `rqm-pennylane` does not duplicate math or compiler logic — it bridges them.
 
 ---
@@ -119,7 +118,7 @@ python examples/basic_quaternion_rotation.py
 
 ---
 
-## Initial supported scope (v0.1.0)
+## v0.1.0 API
 
 ### Gates / operations
 - `RQMRotation(phi, theta, omega, wires)` — one-qubit Euler rotation

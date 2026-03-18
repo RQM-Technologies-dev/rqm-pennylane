@@ -11,7 +11,6 @@ Usage
 import math
 
 import pennylane as qml
-from pennylane import numpy as pnp
 
 from rqm_pennylane import (
     apply_quaternion_rotation,

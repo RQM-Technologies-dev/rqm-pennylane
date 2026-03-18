@@ -22,7 +22,6 @@ from rqm_pennylane import (
     default_qubit_device,
     hardware_efficient_ansatz,
     optimize_step,
-    parameter_shift_gradients,
 )
 
 # ---------------------------------------------------------------------------
