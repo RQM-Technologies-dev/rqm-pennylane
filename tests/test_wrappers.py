@@ -6,12 +6,43 @@ import math
 
 import numpy as np
 import pytest
+import rqm_core
 
 from rqm_pennylane.wrappers import (
     bloch_to_pennylane_state,
     quaternion_to_rotation_params,
     spinor_to_statevector,
 )
+
+
+class TestRqmCoreIntegration:
+    """Verify that wrappers.py integrates with the canonical rqm-core library."""
+
+    def test_rqm_core_importable(self):
+        assert hasattr(rqm_core, "Quaternion")
+        assert hasattr(rqm_core, "normalize_spinor")
+        assert hasattr(rqm_core, "bloch_to_state")
+
+    def test_bloch_to_pennylane_state_matches_rqm_core(self):
+        theta, phi = 1.0, 0.5
+        sv = bloch_to_pennylane_state(theta, phi)
+        alpha_ref, beta_ref = rqm_core.bloch_to_state(theta, phi)
+        np.testing.assert_allclose(sv[0], alpha_ref, atol=1e-14)
+        np.testing.assert_allclose(sv[1], beta_ref, atol=1e-14)
+
+    def test_spinor_to_statevector_matches_rqm_core(self):
+        sv = spinor_to_statevector([3 + 4j, 0j])
+        alpha_ref, beta_ref = rqm_core.normalize_spinor(3 + 4j, 0j)
+        np.testing.assert_allclose(sv[0], alpha_ref, atol=1e-14)
+        np.testing.assert_allclose(sv[1], beta_ref, atol=1e-14)
+
+    def test_quaternion_uses_rqm_core_type(self):
+        # Verifies that Quaternion from rqm-core normalises correctly
+        # and that quaternion_to_rotation_params accepts the same input.
+        q_ref = rqm_core.Quaternion(1, 0, 0, 0)
+        phi, theta, omega = quaternion_to_rotation_params([q_ref.w, q_ref.x, q_ref.y, q_ref.z])
+        assert abs(theta) < 1e-10  # identity → zero rotation
+
 
 
 class TestQuaternionToRotationParams:

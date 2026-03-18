@@ -1,6 +1,6 @@
 # rqm-pennylane
 
-**rqm-pennylane** is the PennyLane integration layer for the RQM Quantum Computing ecosystem — differentiable gates, variational helpers, and hybrid quantum-classical workflows.
+**rqm-pennylane** adds differentiable and hybrid quantum workflows to the RQM ecosystem through PennyLane-compatible wrappers, gradient-friendly gates, and variational utilities built on top of `rqm-core`.
 
 ---
 
@@ -44,13 +44,16 @@ PennyLane is the differentiable / variational entrypoint in the RQM stack.
 ## Installation
 
 ```bash
-pip install rqm-pennylane
+python -m pip install rqm-pennylane
 ```
+
+This installs `rqm-core` (canonical quaternion / spinor / Bloch math) and
+`pennylane` automatically as required dependencies.
 
 For development:
 
 ```bash
-pip install "rqm-pennylane[dev]"
+python -m pip install "rqm-pennylane[dev]"
 ```
 
 ---
@@ -59,23 +62,30 @@ pip install "rqm-pennylane[dev]"
 
 ```python
 import pennylane as qml
-import numpy as np
+from pennylane import numpy as pnp
 from rqm_pennylane import (
     default_qubit_device,
-    RQMRotation,
-    single_qubit_layer,
-    expectation_cost,
+    hardware_efficient_ansatz,
+    optimize_step,
 )
 
-dev = default_qubit_device(wires=1)
+dev = default_qubit_device(wires=2)
 
 @qml.qnode(dev)
-def circuit(params):
-    RQMRotation(params[0], params[1], params[2], wires=0)
-    return qml.expval(qml.PauliZ(0))
+def cost_circuit(params):
+    hardware_efficient_ansatz(params, wires=[0, 1], depth=2)
+    return qml.expval(qml.PauliZ(0) @ qml.PauliZ(1))
 
-params = np.array([0.1, 0.2, 0.3])
-print(circuit(params))  # scalar expectation value
+params = pnp.array([[[ 0.1, 0.2, 0.3],
+                     [ 0.4, 0.5, 0.6]],
+                    [[ 0.7, 0.8, 0.9],
+                     [ 0.1, 0.2, 0.3]]], requires_grad=True)
+
+opt = qml.GradientDescentOptimizer(stepsize=0.2)
+for step in range(5):
+    cost = float(cost_circuit(params))
+    params = optimize_step(opt, cost_circuit, params)
+    print(f"step {step}  cost = {cost:.4f}")
 ```
 
 ---
