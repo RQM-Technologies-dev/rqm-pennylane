@@ -1,0 +1,48 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "rqm-pennylane"
+version = "0.1.0"
+description = "PennyLane integration layer for the RQM Quantum Computing ecosystem — differentiable gates, variational helpers, and hybrid quantum-classical workflows."
+readme = "README.md"
+license = { file = "LICENSE" }
+authors = [{ name = "RQM Technologies", email = "dev@rqm-technologies.io" }]
+requires-python = ">=3.9"
+dependencies = [
+    "pennylane>=0.36",
+    "numpy>=1.24",
+]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Science/Research",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Scientific/Engineering :: Physics",
+    "Topic :: Scientific/Engineering :: Mathematics",
+    "Typing :: Typed",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0",
+    "pytest-cov",
+]
+
+[project.urls]
+Homepage = "https://github.com/RQM-Technologies-dev/rqm-pennylane"
+Source = "https://github.com/RQM-Technologies-dev/rqm-pennylane"
+Issues = "https://github.com/RQM-Technologies-dev/rqm-pennylane/issues"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/rqm_pennylane"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-v"
