@@ -18,23 +18,35 @@ def test_all_symbols_importable():
 def test_wrappers_importable():
     from rqm_pennylane import (
         bloch_to_pennylane_state,
+        quaternion_to_bloch_vector,
+        quaternion_to_measurement_probs,
         quaternion_to_rotation_params,
+        spinor_to_quaternion_embedding,
         spinor_to_statevector,
     )
     assert callable(quaternion_to_rotation_params)
     assert callable(spinor_to_statevector)
     assert callable(bloch_to_pennylane_state)
+    assert callable(spinor_to_quaternion_embedding)
+    assert callable(quaternion_to_bloch_vector)
+    assert callable(quaternion_to_measurement_probs)
 
 
 def test_gates_importable():
     from rqm_pennylane import (
         RQMRotation,
+        accumulate_gate_quaternions,
         apply_quaternion_rotation,
+        canonicalize_gate_quaternion,
+        gate_to_quaternion,
         parameterized_su2,
     )
     assert callable(RQMRotation)
     assert callable(apply_quaternion_rotation)
     assert callable(parameterized_su2)
+    assert callable(gate_to_quaternion)
+    assert callable(accumulate_gate_quaternions)
+    assert callable(canonicalize_gate_quaternion)
 
 
 def test_templates_importable():

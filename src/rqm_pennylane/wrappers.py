@@ -22,12 +22,22 @@ import math
 from typing import Sequence, Tuple
 
 import numpy as np
-from rqm_core import Quaternion, bloch_to_state, normalize_spinor
+from rqm_core import (
+    Quaternion,
+    bloch_from_quaternion,
+    bloch_to_state,
+    measurement_probabilities,
+    normalize_spinor,
+    spinor_to_quaternion,
+)
 
 __all__ = [
     "quaternion_to_rotation_params",
     "spinor_to_statevector",
     "bloch_to_pennylane_state",
+    "spinor_to_quaternion_embedding",
+    "quaternion_to_bloch_vector",
+    "quaternion_to_measurement_probs",
 ]
 
 
@@ -121,6 +131,130 @@ def spinor_to_statevector(
             "Spinor has zero norm; cannot produce a valid statevector."
         ) from exc
     return np.array([alpha, beta], dtype=complex)
+
+
+def spinor_to_quaternion_embedding(
+    spinor: Sequence[complex],
+) -> Quaternion:
+    """Return the unit quaternion associated with a two-component spinor.
+
+    A normalised qubit state ``|ψ⟩ = α|0⟩ + β|1⟩`` lives on the unit
+    3-sphere S³ before quotienting out global phase.  This function
+    delegates to ``rqm_core.spinor_to_quaternion`` to extract the
+    quaternion that maps the reference state ``|0⟩`` onto ``|ψ⟩``.
+
+    The spinor components are packed into quaternion coordinates following
+    the canonical embedding from the RQM quaternion theory (§5):
+    the first complex amplitude contributes the scalar and *i* parts,
+    the second contributes the *j* and *k* parts.
+
+    Parameters
+    ----------
+    spinor:
+        A length-2 sequence of complex amplitudes ``(alpha, beta)``.
+
+    Returns
+    -------
+    rqm_core.Quaternion
+        Unit quaternion corresponding to the spinor state.
+
+    Raises
+    ------
+    ValueError
+        If *spinor* does not have exactly 2 elements or has zero norm.
+
+    Notes
+    -----
+    Global phase is not physically observable; the returned quaternion
+    encodes the rotation ``|0⟩ → |ψ⟩`` up to global phase.  Use
+    :func:`quaternion_to_bloch_vector` to project to the gauge-invariant
+    Bloch vector (theory §6, §12).
+    """
+    arr = np.asarray(spinor, dtype=complex)
+    if arr.shape != (2,):
+        raise ValueError(
+            f"A spinor must have exactly 2 components; got shape {arr.shape}."
+        )
+    try:
+        return spinor_to_quaternion(complex(arr[0]), complex(arr[1]))
+    except ValueError as exc:
+        raise ValueError(
+            "Spinor has zero norm; cannot produce a quaternion embedding."
+        ) from exc
+
+
+def quaternion_to_bloch_vector(
+    q: Sequence[float],
+) -> Tuple[float, float, float]:
+    """Extract the Bloch vector from a unit quaternion.
+
+    Delegates to ``rqm_core.bloch_from_quaternion``, which computes the
+    rotated reference axis ``k`` via quaternion conjugation:
+
+        r' = q · k · q⁻¹
+
+    where ``k`` is the pure-imaginary quaternion corresponding to the
+    z-axis (the Bloch direction of ``|0⟩``).
+
+    Parameters
+    ----------
+    q:
+        Length-4 sequence ``(w, x, y, z)`` representing a unit quaternion.
+        The quaternion is normalised internally.
+
+    Returns
+    -------
+    tuple[float, float, float]
+        Bloch vector ``(x, y, z)`` with unit norm.
+
+    Notes
+    -----
+    Pure single-qubit states modulo global phase correspond to points on
+    the Bloch sphere S².  The quaternion carries more information (it lives
+    on S³), so the Bloch projection is gauge-invariant but lossy (theory §6).
+    Use this function for visualisation and for computing measurement
+    probabilities via :func:`quaternion_to_measurement_probs`.
+    """
+    w, x, y, z = (float(v) for v in q)
+    norm = math.sqrt(w * w + x * x + y * y + z * z)
+    if norm < 1e-12:
+        raise ValueError("Quaternion has zero norm; cannot extract a Bloch vector.")
+    quat = Quaternion(w / norm, x / norm, y / norm, z / norm)
+    return bloch_from_quaternion(quat)
+
+
+def quaternion_to_measurement_probs(
+    q: Sequence[float],
+) -> Tuple[float, float]:
+    """Return Z-basis measurement probabilities for a unit-quaternion state.
+
+    Extracts the Bloch vector from *q* via :func:`quaternion_to_bloch_vector`
+    and then delegates to ``rqm_core.measurement_probabilities`` to compute::
+
+        P(|0⟩) = (1 + z) / 2
+        P(|1⟩) = (1 − z) / 2
+
+    This is the bridge from quaternion geometry to standard PennyLane
+    observable outputs (theory §17).
+
+    Parameters
+    ----------
+    q:
+        Length-4 sequence ``(w, x, y, z)`` representing a unit quaternion.
+
+    Returns
+    -------
+    tuple[float, float]
+        ``(p0, p1)`` where ``p0 = P(|0⟩)`` and ``p1 = P(|1⟩)``.
+        Both values lie in ``[0, 1]`` and sum to 1.
+
+    Raises
+    ------
+    ValueError
+        If *q* has zero norm.
+    """
+    bx, by, bz = quaternion_to_bloch_vector(q)
+    return measurement_probabilities(bx, by, bz)
 
 
 def bloch_to_pennylane_state(

@@ -26,7 +26,10 @@ from rqm_pennylane.export import (
 )
 from rqm_pennylane.gates import (
     RQMRotation,
+    accumulate_gate_quaternions,
     apply_quaternion_rotation,
+    canonicalize_gate_quaternion,
+    gate_to_quaternion,
     parameterized_su2,
 )
 from rqm_pennylane.templates import (
@@ -43,7 +46,10 @@ from rqm_pennylane.variational import (
 )
 from rqm_pennylane.wrappers import (
     bloch_to_pennylane_state,
+    quaternion_to_bloch_vector,
+    quaternion_to_measurement_probs,
     quaternion_to_rotation_params,
+    spinor_to_quaternion_embedding,
     spinor_to_statevector,
 )
 
@@ -54,10 +60,16 @@ __all__ = [
     "quaternion_to_rotation_params",
     "spinor_to_statevector",
     "bloch_to_pennylane_state",
+    "spinor_to_quaternion_embedding",
+    "quaternion_to_bloch_vector",
+    "quaternion_to_measurement_probs",
     # gates
     "RQMRotation",
     "apply_quaternion_rotation",
     "parameterized_su2",
+    "gate_to_quaternion",
+    "accumulate_gate_quaternions",
+    "canonicalize_gate_quaternion",
     # templates
     "single_qubit_layer",
     "entangling_layer",
