@@ -163,4 +163,4 @@ Supported gates in the export bridge: `rx`, `ry`, `rz`, `h`, `x`, `y`, `z`, `cno
 
 ## License
 
-MIT — see [`LICENSE`](LICENSE).
+Apache License 2.0 — see [`LICENSE`](LICENSE).
