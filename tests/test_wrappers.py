@@ -85,6 +85,15 @@ class TestQuaternionToRotationParams:
         assert math.isfinite(theta)
         assert math.isfinite(omega)
 
+    def test_delegates_to_rqm_core_zyz_with_pennylane_angle_order(self):
+        q = rqm_core.gate_rx(math.pi / 2)
+        alpha, beta, gamma = rqm_core.quaternion_to_zyz(q.w, q.x, q.y, q.z)
+        phi, theta, omega = quaternion_to_rotation_params([q.w, q.x, q.y, q.z])
+
+        assert abs(phi - gamma) < 1e-12
+        assert abs(theta - beta) < 1e-12
+        assert abs(omega - alpha) < 1e-12
+
 
 class TestSpinorToStatevector:
     def test_normalized_output(self):

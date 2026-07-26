@@ -28,6 +28,7 @@ from rqm_core import (
     bloch_to_state,
     measurement_probabilities,
     normalize_spinor,
+    quaternion_to_zyz,
     spinor_to_quaternion,
 )
 
@@ -82,18 +83,12 @@ def quaternion_to_rotation_params(
     quat = Quaternion(w / norm, x / norm, y / norm, z / norm)
     w, x, y, z = quat.w, quat.x, quat.y, quat.z
 
-    # ZYZ Euler decomposition from the SU(2) matrix:
-    #   U = [[w + iz,  y + ix],
-    #        [-y + ix, w - iz]]
-    # phi = atan2(z, w) + atan2(x, y)
-    # omega = atan2(z, w) - atan2(x, y)
-    # theta = 2 * atan2(sqrt(x² + y²), sqrt(w² + z²))
-    # This decomposition is PennyLane-specific and lives in this adapter.
-    phi = math.atan2(z, w) + math.atan2(x, y)
-    omega = math.atan2(z, w) - math.atan2(x, y)
-    theta = 2.0 * math.atan2(math.sqrt(x * x + y * y), math.sqrt(w * w + z * z))
-
-    return phi, theta, omega
+    # rqm-core returns angles for the matrix product
+    # RZ(alpha) @ RY(beta) @ RZ(gamma). PennyLane's Rot(phi, theta, omega)
+    # emits that same product as RZ(omega) @ RY(theta) @ RZ(phi), so the
+    # outer Z angles are reversed at this adapter boundary.
+    alpha, beta, gamma = quaternion_to_zyz(w, x, y, z)
+    return gamma, beta, alpha
 
 
 def spinor_to_statevector(
