@@ -205,10 +205,12 @@ def quaternion_to_bloch_vector(
     Notes
     -----
     Pure single-qubit states modulo global phase correspond to points on
-    the Bloch sphere S².  The quaternion carries more information (it lives
-    on S³), so the Bloch projection is gauge-invariant but lossy (theory §6).
-    Use this function for visualisation and for computing measurement
-    probabilities via :func:`quaternion_to_measurement_probs`.
+    the Bloch sphere S². A unit quaternion lives on S³ and can encode a full
+    SU(2) frame, while this projection retains only the rotated reference
+    axis. The discarded fibre is gauge/global-phase information when the
+    quaternion represents a pure state, not additional observable state
+    information. Use this function for visualisation and for computing
+    measurement probabilities via :func:`quaternion_to_measurement_probs`.
     """
     w, x, y, z = (float(v) for v in q)
     norm = math.sqrt(w * w + x * x + y * y + z * z)
