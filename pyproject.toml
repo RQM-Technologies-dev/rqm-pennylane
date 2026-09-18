@@ -44,7 +44,6 @@ keywords = [
 dev = [
     "pytest>=7.0",
     "pytest-cov",
-    "rqm-compiler>=0.3,<0.5",
 ]
 
 [project.urls]
