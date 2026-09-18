@@ -1,3 +1,6 @@
+import sys
+import pytest
+if sys.version_info < (3,11): pytest.skip("rqm-compiler 0.4 requires Python 3.11+",allow_module_level=True)
 import pennylane as qml
 from rqm_compiler import Circuit,compile_representation_aware,lower_circuit_for_backend
 from rqm_pennylane.export import compiled_circuit_to_qnode_ops
