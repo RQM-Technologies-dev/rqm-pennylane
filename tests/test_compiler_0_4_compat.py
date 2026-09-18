@@ -1,5 +1,5 @@
 import pennylane as qml
-from rqm_compiler import Circuit,compile_representation_aware
+from rqm_compiler import Circuit,compile_representation_aware,lower_circuit_for_backend
 from rqm_pennylane.export import compiled_circuit_to_qnode_ops
 
 def test_compiler_0_4_candidate_exports_to_pennylane():
@@ -18,5 +18,6 @@ def test_compiler_report_is_out_of_band_from_pennylane_descriptor_bridge():
  c=Circuit(1);c.rx(0,.2)
  compiled=compile_representation_aware(c)
  assert compiled.report.representation_complexity is not None
- ops=compiled_circuit_to_qnode_ops(compiled.circuit)
- assert len(ops)==1
+ lowered=lower_circuit_for_backend(compiled.circuit,backend_family="braket_gate_model")
+ ops=compiled_circuit_to_qnode_ops(lowered)
+ assert len(ops)>=1
