@@ -155,8 +155,23 @@ python examples/basic_quaternion_rotation.py
 ### Export bridge
 - `compiled_operation_to_pennylane(op, wires_override)` — single-op bridge
 - `compiled_circuit_to_qnode_ops(compiled_circuit)` — circuit-level bridge
+- `pennylane_operations_to_compiler(operations, wire_order=...)` — export bound
+  unitary operations into the canonical `rqm_compiler.Circuit` (optional compiler
+  dependency required). Explicit wire order preserves idle wires and control order.
 
-Supported gates in the export bridge: `rx`, `ry`, `rz`, `h`, `x`, `y`, `z`, `cnot`, `cz`, `swap`.
+Supported gates in both directions: `rx`, `ry`, `rz`, `h`, `x`, `y`, `z`, `cx`/`cnot`,
+`cz`, `swap`, `rxx`, `ryy`, `rzz`. Export accepts the corresponding native PennyLane
+operation classes. It rejects noise, state preparation, custom gates, dynamic
+control, nonfinite angles and parameter batches. Expand templates explicitly before
+export and bind each parameter setting separately. Existing differentiable helpers
+are unchanged; hardware export snapshots numeric parameters.
+
+Pass the resulting circuit descriptors to hardware preparation with explicit
+terminal measurements and shots. The export does not execute hardware or imply
+device qualification. It rejects a complete QuantumScript rather than silently
+dropping its measurements or expectation-value reduction. Preserve that experiment
+information separately; hosted sweeps and variational reductions need their own
+bounded experiment orchestration.
 
 ---
 

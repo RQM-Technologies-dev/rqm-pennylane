@@ -23,6 +23,7 @@ from rqm_pennylane.devices import default_qubit_device, lightning_device
 from rqm_pennylane.export import (
     compiled_circuit_to_qnode_ops,
     compiled_operation_to_pennylane,
+    pennylane_operations_to_compiler,
 )
 from rqm_pennylane.gates import (
     RQMRotation,
@@ -91,6 +92,7 @@ __all__ = [
     # export
     "compiled_operation_to_pennylane",
     "compiled_circuit_to_qnode_ops",
+    "pennylane_operations_to_compiler",
     # version
     "__version__",
 ]
