@@ -1,5 +1,18 @@
 # Changelog
 
+## [0.2.0](https://github.com/RQM-Technologies-dev/rqm-pennylane/compare/v0.1.3...v0.2.0) (2026-10-11)
+
+
+### Features
+
+* export bound PennyLane operations to canonical circuits ([#14](https://github.com/RQM-Technologies-dev/rqm-pennylane/issues/14)) ([efb76ad](https://github.com/RQM-Technologies-dev/rqm-pennylane/commit/efb76ada244dad5884c10fdba8b5dc368f9fdfad))
+* lower relational pair rotations to PennyLane ([ce8a2d3](https://github.com/RQM-Technologies-dev/rqm-pennylane/commit/ce8a2d3f32ed2a772e9beb23e9f9021e51daf659))
+
+
+### Bug Fixes
+
+* safely read canonical compiler descriptors ([a7ac7cb](https://github.com/RQM-Technologies-dev/rqm-pennylane/commit/a7ac7cbbb0fcfef92d8e7f80b9628f0d8f15ba7b))
+
 ## [0.1.3](https://github.com/RQM-Technologies-dev/rqm-pennylane/compare/v0.1.2...v0.1.3) (2026-07-29)
 
 
