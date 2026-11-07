@@ -1,5 +1,20 @@
 # rqm-pennylane
 
+## Released-stack compatibility
+
+Current source requires `rqm-core>=0.3.1,<0.4`, including the exact-phase Euler
+lowering fix. The qualified compiler lane uses released `rqm-compiler==0.3.8`
+and `rqm-entanglement==0.2.3` on Python 3.11+. Python 3.10 remains supported
+for the adapter without the optional compiler. CI installs dependencies normally
+and runs `pip check`; it does not force incompatible packages with `--no-deps`.
+
+Older adapter releases retain their published dependency constraints. In
+particular, this source change does not make those wheels compatible with
+core 0.3.1, publish a new adapter release, or update any deployed service.
+A coordinated adapter release is required before downstream lockfiles can use
+the new range. Future compiler 0.4 compatibility is not inferred from these tests.
+
+
 **rqm-pennylane** adds differentiable and hybrid quantum workflows to the RQM ecosystem through PennyLane-compatible wrappers, gradient-friendly gates, and variational utilities built on top of `rqm-core`.
 
 ---
